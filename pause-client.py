@@ -1,6 +1,8 @@
 from microbit import *
 import radio
 
+display.scroll("VLC remote", wait=False)
+
 radio.on()
 radio_on = True
 
