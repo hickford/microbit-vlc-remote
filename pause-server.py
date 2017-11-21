@@ -1,19 +1,28 @@
 import win32api # pip install pypiwin32
+from win32gui import GetWindowText, GetForegroundWindow
 
 KEYEVENTF_KEYUP = 0x0002 # https://msdn.microsoft.com/en-us/library/windows/desktop/ms646304(v=vs.85).aspx
 VK_MEDIA_PLAY_PAUSE = 0xB3 # https://msdn.microsoft.com/en-us/library/windows/desktop/dd375731(v=vs.85).aspx
+VK_SPACE = 0x20
+VK_SHIFT = 0x10
 
 VK_MENU = 0x12 # alt
 VK_LEFT = 0x25
 
+def in_netflix():
+    window_text = GetWindowText(GetForegroundWindow())
+    return "Netflix" in window_text
+
 def play_pause():
     """Toggle play. Assumes media player is focused."""
-    win32api.keybd_event(VK_MEDIA_PLAY_PAUSE, 0)
+    key = VK_SPACE if in_netflix() else VK_MEDIA_PLAY_PAUSE
+    win32api.keybd_event(key, 0)
 
 def rewind_ten_seconds():
-    win32api.keybd_event(VK_MENU, 0)
+    key_to_hold = VK_SHIFT if in_netflix() else VK_MENU
+    win32api.keybd_event(key_to_hold, 0)
     win32api.keybd_event(VK_LEFT, 0)
-    win32api.keybd_event(VK_MENU, 0, KEYEVENTF_KEYUP)
+    win32api.keybd_event(key_to_hold, 0, KEYEVENTF_KEYUP)
 
 import serial # pip install pyserial
 from serial.tools.list_ports import comports
